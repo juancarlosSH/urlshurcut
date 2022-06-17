@@ -9,7 +9,7 @@ const { create } = require("express-handlebars");
 const cors = require("cors");
 const User = require("./models/User");
 require("dotenv").config(); // Loads environment variables from .env file
-require("./database/db");
+const clientDB = require("./database/db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
