@@ -42,7 +42,7 @@ const singUp = async (req, res) => {
       from: '"Fred Foo 👻" <foo@example.com>',
       to: newUser.email,
       subject: "Verify your account ✔",
-      html: `<a href="${process.env.FRONTEND_URL}/auth/confirmAccount/${newUser.confirmationToken}">Verify your account here</a>`,
+      html: `<a href="${process.env.FRONTEND_URL}auth/confirmAccount/${newUser.confirmationToken}">Verify your account here</a>`,
     });
 
     await newUser.save();
