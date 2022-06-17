@@ -1,0 +1,29 @@
+<div class="container">
+  <div class="row my-5">
+    <div class="col">
+      <h1 class="text-center">Log in 🔐</h1>
+    </div>
+  </div>
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <form action="/auth/login" method="post">
+        <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+        <input
+          type="text"
+          name="email"
+          placeholder="Enter your email"
+          class="form-control mb-3"
+          autocomplete="off"
+        />
+        <input
+          type="password"
+          name="password"
+          placeholder="Enter your password"
+          class="form-control mb-3"
+          autocomplete="off"
+        />
+        <button type="submit" class="btn btn-primary w-100 mb-2">Log in</button>
+      </form>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,26 @@
+{{#if url}}
+  <form action="/updateUrl/{{url._id}}" method="post">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+    <input
+      value="{{url.originalUrl}}"
+      type="text"
+      placeholder="Enter a URL"
+      name="originalUrl"
+      autocomplete="off"
+      class="form-control my-2"
+    />
+    <button type="submit" class="btn btn-warning w-100 mb-2">Update URL</button>
+  </form>
+{{else}}
+  <form action="/" method="post">
+    <input type="hidden" name="_csrf" value="{{csrfToken}}" />
+    <input
+      type="text"
+      placeholder="Enter a URL"
+      name="originalUrl"
+      autocomplete="off"
+      class="form-control my-2"
+    />
+    <button type="submit" class="btn btn-primary w-100 mb-2">Add URL</button>
+  </form>
+{{/if}}

@@ -1,0 +1,39 @@
+<div class="row justify-content-center">
+  <div class="col col-md-12">
+    <div class="card text-bg-secondary border-light text-center">
+      <h1 class="card-title my-2">{{user.username}}</h1>
+      <p class="card-text">Edit your profile here</p>
+      <div class="text-center">
+        {{#if image}}
+          <img
+            src="/img/profile/{{image}}"
+            class="rounded rounded-circle my-3"
+            alt="..."
+          />
+        {{else}}
+          <img
+            src="/img/profile/default_profile.jpg"
+            class="rounded rounded-circle my-3"
+            alt="..."
+          />
+        {{/if}}
+      </div>
+      <form
+        action="/profile?_csrf={{csrfToken}}"
+        enctype="multipart/form-data"
+        method="post"
+      >
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <input
+            class="form-control form-control-sm mx-4 my-2"
+            type="file"
+            name="myFile"
+          />
+        </div>
+        <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+          <button class="btn btn-success mx-4" type="submit">Save</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
