@@ -23,6 +23,7 @@ const corsOptions = {
 
 app.use(cors(corsOptions)); // Allow all origins to access the API
 
+app.set("trust proxy", 1); // trust first proxy
 app.use(
   session({
     // Configure session
