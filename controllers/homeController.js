@@ -1,4 +1,4 @@
-const Url = require("../models/url");
+const Url = require("../models/Url");
 const { nanoid } = require("nanoid");
 
 const readUrls = async (req, res) => {
