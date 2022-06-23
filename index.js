@@ -7,77 +7,72 @@ const passport = require("passport");
 const csurf = require("csurf");
 const { create } = require("express-handlebars");
 const cors = require("cors");
+require("dotenv").config();
+
 const User = require("./models/User");
-require("dotenv").config(); // Loads environment variables from .env file
 const clientDB = require("./database/db");
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
 const corsOptions = {
-  // Allow all origins to access the API
   credentials: true,
-  origin: process.env.FRONTEND_URL || "*",
+  origin: process.env.URL,
   methods: ["GET", "POST"],
 };
+app.use(cors(corsOptions));
 
-app.use(cors(corsOptions)); // Allow all origins to access the API
-
-app.set("trust proxy", 1); // trust first proxy
 app.use(
   session({
-    // Configure session
-    secret: process.env.SESSION_SECRET, // Secret used to sign the session ID cookie
-    resave: false, // Forces the session to be saved back to the session store, even if the session was never modified during the request
-    saveUninitialized: false, // Forces a session that is "uninitialized" to be saved to the store
-    name: process.env.SESSION_NAME, // Name of the session cookie
+    secret: process.env.SESSION_SECRET,
+    resave: false,
+    saveUninitialized: false,
+    name: process.env.SESSION_NAME,
     store: MongoStore.create({
-      // Configure session store
       clientPromise: clientDB,
-      dbName: process.env.SESSION_DB_NAME,
+      dbName: process.env.DB_NAME,
     }),
     cookie: {
-      secure: process.env.MODE === "production", // Only send cookie over HTTPS in production
-      maxAge: 1000 * 60 * 60 * 24 * 30, // 30 days in milliseconds
+      secure: process.env.ENV_MODE === "production",
+      maxAge: 30 * 24 * 60 * 60 * 1000,
     },
   })
 );
 
-app.use(flash()); // Configure flash
+app.use(flash());
 
-app.use(passport.initialize()); // Initialize Passport
-app.use(passport.session()); // Configure Passport to use session
+app.use(passport.initialize());
+app.use(passport.session());
 passport.serializeUser((user, done) =>
   done(null, { id: user._id, username: user.username })
-); // Serialize user to store in session
+);
 passport.deserializeUser(async (user, done) => {
   const userData = await User.findById(user.id);
   done(null, { id: userData._id, username: userData.username });
-}); // Deserialize user from session
-
-const hbs = create({
-  // create a handlebars instance
-  extname: ".hbs", // set the extension to .hbs
-  partialsDir: "views/components", // set the partials directory
 });
 
-app.engine(".hbs", hbs.engine); // register the engine to the app with the engine name
-app.set("view engine", ".hbs"); // set the view engine to the app with the view engine name
-app.set("views", "./views"); // set the views directory to the app with the views directory
+const hbs = create({
+  extname: ".hbs",
+  partialsDir: "views/components",
+});
 
-app.use(express.static(__dirname + "/public")); // set the static directory to the app with the static directory
-app.use(express.urlencoded({ extended: true })); // set the extended to true to allow for nested objects
+app.engine(".hbs", hbs.engine);
+app.set("view engine", ".hbs");
+app.set("views", "./views");
 
-app.use(csurf()); // Configure CSRF
+app.use(express.static(__dirname + "/public"));
+app.use(express.urlencoded({ extended: true }));
+
+app.use(csurf());
+app.use(mongoSanitize());
+
 app.use((req, res, next) => {
-  res.locals.csrfToken = req.csrfToken(); // Set the CSRF token to the response locals
-  res.locals.message = req.flash("message"); // Set the flash message to the response locals
+  res.locals.csrfToken = req.csrfToken();
+  res.locals.message = req.flash("message");
   next();
 });
 
-app.use(mongoSanitize()); // Configure MongoSanitize
-
-app.use("/", require("./routes/home")); // set the home route to the app with the home route
+app.use("/", require("./routes/home"));
 app.use("/auth", require("./routes/auth"));
 
 app.listen(PORT, () => console.log(`Server is listening in port ${PORT}! 😎`));
